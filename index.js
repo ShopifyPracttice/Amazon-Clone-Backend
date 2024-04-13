@@ -109,6 +109,8 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
     
+   console.log(event.data);
+
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
