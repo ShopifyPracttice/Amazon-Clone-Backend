@@ -49,7 +49,7 @@ router.post("/login/customer", async (req, res) => {
             return res.json({ status: "bad", message: "Invalid Credentials" });
         }
 
-        const expirationTime = 5000000; 
+        const expirationTime = 5000; 
         const token = jwt.sign(
             {userId: customer._id},
             'secret1234',
