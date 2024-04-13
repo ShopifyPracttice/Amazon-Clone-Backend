@@ -171,17 +171,17 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
 
 
 app.use(express.json())
-app.use(cors())
-app.use(cookieParser());
-// app.use(cors({
-//     origin: 'http://localhost:3000',
-//     credentials: true
-//   }));
+// app.use(cors())
+app.use(cors({
+  origin: 'http://localhost:3000',
+  credentials: true
+}));
 app.enableCors({
   origin: 'http://localhost:3000',
       credentials: true,
       methods:['GET', 'POST', 'PUT', 'DELETE']
 })
+app.use(cookieParser());
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
