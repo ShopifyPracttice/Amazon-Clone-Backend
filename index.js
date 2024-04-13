@@ -93,14 +93,7 @@ const app = express();
 // });
 
 
-app.use(bodyParser.json({
-  verify: function (req, res, buf) {
-      var url = req.originalUrl;
-      if (url.startsWith('/webhook')) {
-          req.rawBody = buf.toString()
-      }
-  }
-}));
+
 
 let total;
 let metadata = [];
@@ -184,7 +177,7 @@ app.post('/webhook', express.raw({ type: '*/*' }), async (request, response) => 
   }
 });
 
-
+app.use(require('body-parser').raw({type: '*/*'}));
 // app.use(cors())
 app.use(cors({
   origin: 'https://amazon-clone-front-end-tawny.vercel.app',
