@@ -109,12 +109,12 @@ app.use(express.json({
       req.rawBody = buf.toString();
     }
   },
-   }));
+}));
 
 app.post('/webhook', express.raw({ type: 'application/json' }),async (request, response) => {
-  console.log(request.body)
+  console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
-  const body = request.body;
+  const body = request.rawBody;
   
   try {
     const event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
