@@ -109,7 +109,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
     
-   console.log(event.data);
+  
 
     switch (event.type) {
       case 'checkout.session.completed':
@@ -172,7 +172,6 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
   }
 });
 
-app.use(express.urlencoded({extended: true}))
 
 app.use(express.json())
 // app.use(cors())
