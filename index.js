@@ -1,4 +1,5 @@
 const express= require("express");
+const bodyParser = require('body-parser');
 const cors = require("cors");
 const mongoose = require("mongoose")
 const stripe = require('stripe')('sk_test_51OzdTnFshF4E0vp9jdqWMHH58hsn8pXrjpcCEgFPxFlHly1xglknanqp54vDECX5ht0MEgpxPdQuLQnjteS7H1zb00JxeWTofT');
