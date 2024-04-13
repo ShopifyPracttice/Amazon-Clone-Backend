@@ -55,7 +55,7 @@ router.post("/login/customer", async (req, res) => {
             'secret1234',
             { expiresIn: expirationTime }
         );
-        res.cookie('token', token, { httpOnly: true }).json({ message: "Customer Logged in Successfully!", status: "ok" });
+        res.cookie('token', token, { httpOnly: true }).json({ message: "Customer Logged in Successfully!", status: "ok", token: token });
     } catch (error) {
         console.error("Error logging in customer:", error);
         return res.status(500).json({ message: "Internal Server Error" });
