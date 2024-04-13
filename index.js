@@ -105,6 +105,7 @@ let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910d
 
 
 app.post('/webhook',  bodyParser.raw({type: "*/*"}), async (request, response) => {
+  console.log(request.body)
   const sig = request.headers['stripe-signature'];
   const body = request.body;
   
