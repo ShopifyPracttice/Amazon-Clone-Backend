@@ -11,7 +11,7 @@ const cookieParser = require('cookie-parser');
 // const session = require("express-session");
 
 const app = express();
-const endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
+// const endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
 // let total;
 // let metadata = [];
@@ -98,13 +98,15 @@ let subTotal;
 let paymentIntentId;
 let paymentStatus;
 let customerId;
+let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
+
 
 app.post('/webhook', express.raw({ type: 'application/json' }), async (request, response) => {
   const sig = request.headers['stripe-signature'];
   const body = request.body;
   
   try {
-    const event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    const event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
