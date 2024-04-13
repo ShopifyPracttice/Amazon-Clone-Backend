@@ -104,12 +104,12 @@ let customerId;
 let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
 
-app.post('/webhook', express.raw({ type: '*/*' }), async (request, response) => {
+app.post('/webhook',  bodyParser.raw({type: "*/*"}), async (request, response) => {
   const sig = request.headers['stripe-signature'];
   const body = request.body;
   
   try {
-    const event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    const event = stripe.webhooks.constructEvent(request.raw, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
@@ -177,7 +177,8 @@ app.post('/webhook', express.raw({ type: '*/*' }), async (request, response) => 
   }
 });
 
-app.use(require('body-parser').raw({type: '*/*'}));
+app.use(bodyParser.json());
+
 // app.use(cors())
 app.use(cors({
   origin: 'https://amazon-clone-front-end-tawny.vercel.app',
@@ -203,7 +204,6 @@ app.use(cors({
 // }));
 app.use(cookieParser());
 // app.use(express.json())
-
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
