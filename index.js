@@ -92,6 +92,15 @@ const app = express();
 // });
 
 
+app.use(bodyParser.json({
+  verify: function (req, res, buf) {
+      var url = req.originalUrl;
+      if (url.startsWith('/webhook')) {
+          req.rawBody = buf.toString()
+      }
+  }
+}));
+
 let total;
 let metadata = [];
 let subTotal;
@@ -199,7 +208,7 @@ app.use(cors({
 //     secure: false,}
 // }));
 app.use(cookieParser());
-app.use(express.json())
+// app.use(express.json())
 
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
