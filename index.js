@@ -175,7 +175,7 @@ app.use(express.json())
 app.use(cookieParser());
 app.use(cors({
     origin: 'http://localhost:3000',
-    credentials: false
+    credentials: true
   }));
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
