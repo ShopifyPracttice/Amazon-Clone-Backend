@@ -104,7 +104,7 @@ let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910d
 
 app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
 
-app.post('/webhook', express.raw({ type: 'application/json' }) ,async (request, response) => {
+app.post('/webhook',async (request, response) => {
   console.log(request.body)
   const sig = request.headers['stripe-signature'];
   const body = request.rawBody;
@@ -210,7 +210,7 @@ app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
 app.use("/orders", OrderRoute)
 
-const YOUR_DOMAIN = 'https://amazon-clone-front-end-tawny.vercel.app/';
+const YOUR_DOMAIN = 'https://amazon-clone-front-end-tawny.vercel.app';
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
