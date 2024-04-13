@@ -183,7 +183,7 @@ app.use(session({
   saveUninitialized: true,
   cookie: {
     secure: true, // Set to true for production (if served over HTTPS)
-    sameSite: 'strict', // Set to 'none' for production (if handling cross-site requests)
+    sameSite: 'none', // Set to 'none' for production (if handling cross-site requests)
     // Add other cookie attributes as needed
 }
 }));
