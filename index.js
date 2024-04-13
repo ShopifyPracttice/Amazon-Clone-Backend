@@ -102,6 +102,7 @@ let paymentStatus;
 let customerId;
 let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
+app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
 
 app.post('/webhook', express.raw({ type: 'application/json' }) ,async (request, response) => {
   console.log(request.body)
@@ -176,7 +177,6 @@ app.post('/webhook', express.raw({ type: 'application/json' }) ,async (request, 
     response.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
-app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
 
 // app.use(bodyParser.json());
 
