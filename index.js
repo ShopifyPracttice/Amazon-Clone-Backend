@@ -111,7 +111,7 @@ app.use(express.json({
   },
    }));
 
-app.post('/webhook',async (request, response) => {
+app.post('/webhook', express.raw({ type: 'application/json' }),async (request, response) => {
   console.log(request.body)
   const sig = request.headers['stripe-signature'];
   const body = request.body;
