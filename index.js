@@ -202,7 +202,7 @@ app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
 app.use("/orders", OrderRoute)
 
-const YOUR_DOMAIN = 'http://localhost:3000';
+const YOUR_DOMAIN = 'https://amazon-clone-front-end-tawny.vercel.app/';
 
 app.post('/create-checkout-session', async (req, res) => {
   try {
