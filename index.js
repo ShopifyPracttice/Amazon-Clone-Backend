@@ -8,7 +8,7 @@ const OrderRoute = require("./routes/order")
 const BusinessRoute = require("./routes/business")
 const ProductRoute = require("./routes/product")
 const cookieParser = require('cookie-parser');
-// const session = require("express-session");
+const session = require("express-session");
 
 const app = express();
 const endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
@@ -178,6 +178,17 @@ app.use(cors({
   origin: 'http://localhost:3000',
   credentials: true
 }));
+app.use(session({
+  secret: 'your_secret_here', // Set your session secret here
+  resave: false,
+  saveUninitialized: true,
+  cookie: {
+      secure: false, // Set to true for production (if served over HTTPS)
+      sameSite: 'none', // Set to 'none' for production (if handling cross-site requests)
+      // Add other cookie attributes as needed
+  }
+}));
+
 // app.use(session({
 //   secret: 'secret1234',
 //   resave: false,
