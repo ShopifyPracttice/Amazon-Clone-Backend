@@ -175,7 +175,7 @@ app.use(express.urlencoded({extended: true}))
 app.use(express.json())
 // app.use(cors())
 app.use(cors({
-  origin: 'http://localhost:3000',
+  origin: 'https://amazon-clone-front-end-tawny.vercel.app/',
   credentials: true
 }));
 // app.use(session({
