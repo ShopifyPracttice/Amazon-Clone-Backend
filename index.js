@@ -175,7 +175,6 @@ app.post('/webhook', express.raw({ type: '*/*' }), async (request, response) => 
 });
 
 
-app.use(express.json())
 // app.use(cors())
 app.use(cors({
   origin: 'https://amazon-clone-front-end-tawny.vercel.app',
@@ -200,6 +199,8 @@ app.use(cors({
 //     secure: false,}
 // }));
 app.use(cookieParser());
+app.use(express.json())
+
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
