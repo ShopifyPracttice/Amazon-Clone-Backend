@@ -92,7 +92,7 @@ const app = express();
 //   }
 // });
 
-
+app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
 
 
 let total;
@@ -104,7 +104,7 @@ let customerId;
 let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
 
-app.post('/webhook',express.raw({ type: 'application/json' }) ,async (request, response) => {
+app.post('/webhook',async (request, response) => {
   console.log(request.body)
   const sig = request.headers['stripe-signature'];
   const body = request.body;
@@ -178,7 +178,7 @@ app.post('/webhook',express.raw({ type: 'application/json' }) ,async (request, r
   }
 });
 
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 // app.use(cors())
 app.use(cors({
