@@ -170,6 +170,7 @@ app.post('/webhook', express.raw({ type: 'application/json' }), async (request, 
   }
 });
 
+app.use(express.urlencoded({extended: true}))
 
 app.use(express.json())
 // app.use(cors())
@@ -182,10 +183,7 @@ app.use(session({
   resave: false,
   saveUninitialized: true,
   cookie: {
-    secure: true, // Set to true for production (if served over HTTPS)
-    sameSite: 'none', // Set to 'none' for production (if handling cross-site requests)
-    // Add other cookie attributes as needed
-}
+    secure: false,}
 }));
 app.use(cookieParser());
 app.use("/user", CustomerRoute)
