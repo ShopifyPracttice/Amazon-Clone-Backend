@@ -1,9 +1,9 @@
 const jwt = require("jsonwebtoken")
 
 const verifyToken = (req, res, next)=>{
-    const token = req.cookies["auth-token"]
+    const token = req.cookies["token"]
     if(!token){
-        return res.status(401).json({ message: "Unauthorized" });
+        return res.status(401).json({ message: "Unauthorizedsss" });
     }
 
     try{
@@ -16,7 +16,7 @@ const verifyToken = (req, res, next)=>{
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ message: "Token expired" });
         } else {
-            return res.status(401).json({ message: "Unauthorized" });
+            return res.status(401).json({ message: "Unauthorizeds" });
         }
 
     }
