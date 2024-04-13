@@ -180,7 +180,7 @@ app.use(cors({
 }));
 app.use(session({
   secret: 'your_secret_here', // Set your session secret here
-  resave: false,
+  resave: true,
   saveUninitialized: true,
   cookie: {
       secure: false, // Set to true for production (if served over HTTPS)
