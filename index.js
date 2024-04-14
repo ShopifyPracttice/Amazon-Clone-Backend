@@ -130,7 +130,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
         metadata = JSON.parse(event.data.object.metadata.buyNow);
-        console.log(metadata);
+        // console.log(metadata);
         paymentIntentId = event.data.object.id;
         const products = Array.isArray(metadata) ? metadata : [metadata];
         // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
