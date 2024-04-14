@@ -93,6 +93,11 @@ router.get("/validate-token", verifyToken, async (req, res) => {
     }
 });
 
-
+router.post("/logout", (req, res)=>{
+    res.cookie("token","",{
+        expires: new Date(0),
+    })
+    res.send()
+})
 
 module.exports = router
