@@ -107,14 +107,14 @@ let paymentStatus;
 let customerId;
 let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
-app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
+app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf.toString() }}))
 
 let event
 
 app.post('/webhook', async (request, response) => {
   // console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
-  const body = request.body;
+  const body = request.rawBody;
   // const body = JSON.stringify(request.body, null, 2);
   
   try {
