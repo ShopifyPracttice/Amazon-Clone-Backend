@@ -98,6 +98,7 @@ const app = express();
 //       req.rawBody = buf
 //   },
 // }));
+app.use(bodyParser.json());
 
 let total;
 let metadata = [];
@@ -114,7 +115,7 @@ let event
 app.post('/webhook', async (request, response) => {
   // console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
-  const body = request.rawBody;
+  const body = request.body;
   // const body = JSON.stringify(request.body, null, 2);
   
   try {
@@ -186,7 +187,6 @@ app.post('/webhook', async (request, response) => {
   }
 });
 
-// app.use(bodyParser.json());
 
 // app.use(cors())
 app.use(cors({
