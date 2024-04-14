@@ -65,7 +65,7 @@ router.post("/login/customer", async (req, res) => {
 router.get("/logout", (req, res)=>{
     try {
         // Clear the token cookie
-        res.clearCookie('token');
+        res.clearCookie('token', { httpOnly: true,sameSite: 'none',secure: true, });
         
         // Respond with a success message
         res.status(200).send("Logout successful");
