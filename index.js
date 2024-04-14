@@ -114,7 +114,7 @@ let event
 app.post('/webhook', async (request, response) => {
   // console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
-  const body = request.body;
+  const body = request.rawBody;
   // const body = JSON.stringify(request.body, null, 2);
   
   try {
