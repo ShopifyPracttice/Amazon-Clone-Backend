@@ -99,6 +99,7 @@ const app = express();
 //   },
 // }));
 // app.use(bodyParser.json());
+app.use(express.json())
 
 let total;
 let metadata = [];
@@ -185,7 +186,6 @@ app.post('/webhook', bodyParser.raw({type: 'application/json'}),async (request, 
     response.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
-app.use(express.json())
 
 // app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf.toString() }}))
 
