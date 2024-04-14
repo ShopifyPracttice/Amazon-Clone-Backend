@@ -28,7 +28,7 @@ router.post("/register/customer", async (req, res) => {
             'secret1234',
             { expiresIn: expirationTime }
         );
-        res.cookie('token', token, { httpOnly: true }).json({ message: "Customer Logged in Successfully!", status: "ok" });
+        res.cookie('token', token, { httpOnly: true,sameSite: 'none',secure: true, }).json({ message: "Customer Logged in Successfully!", status: "ok" });
     } catch (error) {
         console.error("Error registering customer:", error);
         return res.status(500).json({ message: "Internal Server Error" });

@@ -47,7 +47,7 @@ router.post("/register/business/details", async (req, res) => {
             'secret1234',
             { expiresIn: expirationTime }
         );
-        res.cookie('token', token, { httpOnly: true }).json({ message: "Business Registered in Successfully!", status: "OK" });
+        res.cookie('token', token, { httpOnly: true,sameSite: 'none',secure: true, }).json({ message: "Business Registered in Successfully!", status: "OK" });
     } catch (error) {
         console.error("Error registering Business:", error);
         return res.status(500).json({ message: "Internal Server Error" });
@@ -133,7 +133,7 @@ router.post("/login/business", async (req, res) => {
             'secret1234',
             { expiresIn: expirationTime }
         );
-        res.cookie('token', token, { httpOnly: true }).json({ message: "Business Account Logged in Successfully!", status: "ok" });
+        res.cookie('token', token, { httpOnly: true,sameSite: 'none',secure: true, }).json({ message: "Business Account Logged in Successfully!", status: "ok" });
     } catch (error) {
         console.error("Error logging in Business:", error);
         return res.status(500).json({ message: "Internal Server Error" });
