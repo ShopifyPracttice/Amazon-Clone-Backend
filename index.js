@@ -107,7 +107,7 @@ let paymentIntentId;
 let paymentStatus;
 let customerId;
 // let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
-const endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
+const endpointSecret = "whsec_kDwd7Xbt20GXU1iu852Oy5FT3Tn6kC0n";
 
 
 // let event
