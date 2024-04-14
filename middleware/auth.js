@@ -4,7 +4,7 @@ const verifyToken = (req, res, next)=>{
     const token = req.cookies["token"]
     // console.log(req.cookies["token"], req.cookies);
     if(!token){
-        return res.status(401).json({ message: "Unauthorizedsss" });
+        return res.status(401).json({ message: "Unauthorized" });
     }
 
     try{
@@ -17,7 +17,7 @@ const verifyToken = (req, res, next)=>{
         if (err.name === 'TokenExpiredError') {
             return res.status(401).json({ message: "Token expired" });
         } else {
-            return res.status(401).json({ message: "Unauthorizeds" });
+            return res.status(401).json({ message: "Unauthorized" });
         }
 
     }
