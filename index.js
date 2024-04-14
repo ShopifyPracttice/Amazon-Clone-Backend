@@ -94,9 +94,8 @@ const app = express();
 
 app.use(express.json({
   verify: (req, res, buf) => {
-    if (req.originalUrl.startsWith('/webhook')) {
-      req.rawBody = buf.toString();
-    }
+    
+      req.rawBody = buf
   },
 }));
 
@@ -111,11 +110,11 @@ let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910d
 // app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf }}))
 
 
-app.post('/webhook', express.raw({ type: 'application/json' }),async (request, response) => {
+app.post('/webhook', async (request, response) => {
   // console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
-  // const body = request.rawBody;
-  const body = JSON.stringify(request.body, null, 2);
+  const body = request.rawBody;
+  // const body = JSON.stringify(request.body, null, 2);
 
   
   try {
