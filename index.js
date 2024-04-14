@@ -98,7 +98,7 @@ const app = express();
 //       req.rawBody = buf
 //   },
 // }));
-app.use(bodyParser.json());
+// app.use(bodyParser.json());
 
 let total;
 let metadata = [];
@@ -108,18 +108,17 @@ let paymentStatus;
 let customerId;
 let endpointSecret = "whsec_93e0c76098294832cf6a37885ce49cfc9455f0f767584123910dee4b6865020a";
 
-app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf.toString() }}))
 
 let event
 
-app.post('/webhook', async (request, response) => {
+app.post('/webhook', express.raw({ type: 'application/json' }),async (request, response) => {
   // console.log(request.rawBody)
   const sig = request.headers['stripe-signature'];
   // const body = request.body;
-  const body = JSON.stringify(request.body, null, 2);
+  const body = request.body;
   
   try {
-    event = stripe.webhooks.constructEvent(body, sig, endpointSecret);
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
@@ -186,7 +185,9 @@ app.post('/webhook', async (request, response) => {
     response.status(400).send(`Webhook Error: ${err.message}`);
   }
 });
+app.use(express.json())
 
+// app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf.toString() }}))
 
 // app.use(cors())
 app.use(cors({
@@ -212,7 +213,6 @@ app.use(cors({
 //     secure: false,}
 // }));
 app.use(cookieParser());
-// app.use(express.json())
 app.use("/user", CustomerRoute)
 app.use("/user", BusinessRoute)
 app.use("/product", ProductRoute)
