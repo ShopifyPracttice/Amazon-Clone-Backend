@@ -62,6 +62,18 @@ router.post("/login/customer", async (req, res) => {
     }
 });
 
+router.get("/logout", (req, res)=>{
+    try {
+        // Clear the token cookie
+        res.clearCookie("token");
+        
+        // Respond with a success message
+        res.status(200).send("Logout successful");
+    } catch (error) {
+        console.error("Error logging out:", error);
+        res.status(500).send("Internal Server Error");
+    }
+});
 
 router.get("/validate-token", verifyToken, async (req, res) => {
     try {
@@ -93,15 +105,15 @@ router.get("/validate-token", verifyToken, async (req, res) => {
     }
 });
 
-router.get("/logout",  (req, res)=>{
-    try {
-        res.clearCookie("token", { path: '/' })
-        res.status(200).send("Logout successful");
-    } catch (error) {
-        console.error("Error logging out:", error);
-        res.status(500).send("Internal Server Error");
-    }
-});
+// router.get("/logout",  (req, res)=>{
+//     try {
+//         res.clearCookie("token", { path: '/' })
+//         res.status(200).send("Logout successful");
+//     } catch (error) {
+//         console.error("Error logging out:", error);
+//         res.status(500).send("Internal Server Error");
+//     }
+// });
 
 
 module.exports = router
