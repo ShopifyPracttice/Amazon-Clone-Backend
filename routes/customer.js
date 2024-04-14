@@ -93,7 +93,7 @@ router.get("/validate-token", verifyToken, async (req, res) => {
     }
 });
 
-router.get("/logout", (req, res)=>{
+router.get("/logout", verifyToken, (req, res)=>{
     try {
         res.clearCookie("token",{ httpOnly: true,sameSite: 'none',secure: true, })
         res.status(200).send("Logout successful");
