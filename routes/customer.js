@@ -95,7 +95,7 @@ router.get("/validate-token", verifyToken, async (req, res) => {
 
 router.get("/logout", (req, res)=>{
     try {
-        res.clearCookie("token")
+        res.clearCookie("token",{ httpOnly: true,sameSite: 'none',secure: true, })
         res.status(200).send("Logout successful");
     } catch (error) {
         console.error("Error logging out:", error);
