@@ -110,101 +110,101 @@ let customerId;
 const endpointSecret = "whsec_kDwd7Xbt20GXU1iu852Oy5FT3Tn6kC0n";
 
 
-// let event
+let event
 
-// app.post('/webhook', bodyParser.raw({type: 'application/json'}),async (request, response) => {
-//   // console.log(request.rawBody)
-//   const sig = request.headers['stripe-signature'];
-//   // const body = request.body;
-//   const body = request.body;
+app.post('/webhook', express.raw({type: 'application/json'}),async (request, response) => {
+  // console.log(request.rawBody)
+  const sig = request.headers['stripe-signature'];
+  // const body = request.body;
+  const body = request.body;
   
-//   try {
-//     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
-//     const Id = event.data.object.metadata.buyNow;
-//     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
-//     const invoicePdf = event.data.object.invoice_pdf;  
+  try {
+    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    const Id = event.data.object.metadata.buyNow;
+    const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
+    const invoicePdf = event.data.object.invoice_pdf;  
     
   
 
-//     switch (event.type) {
-//       case 'checkout.session.completed':
-//         const paymentIntent = event.data.object;
-//         metadata = JSON.parse(event.data.object.metadata.buyNow);
-//         console.log(metadata);
-//         paymentIntentId = event.data.object.id;
-//         const products = Array.isArray(metadata) ? metadata : [metadata];
-//         // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
-//         customerId = products[0]?.userId || metadata.userId
-//         const formattedProducts = products.map(product => ({
-//           productId: product.productId,
-//           sellerId: product.sellerId,
-//           productBrand: product.productBrand,
-//           productPrice: product.productPrice,
-//           productRetailPrice: product.productRetailPrice,
-//           productName: product.productName,
-//           productQuantity: product.productQuantity,
-//           productColor: product.productColor,
-//           productSize: product.productSize
-//         }));
+    switch (event.type) {
+      case 'checkout.session.completed':
+        const paymentIntent = event.data.object;
+        metadata = JSON.parse(event.data.object.metadata.buyNow);
+        console.log(metadata);
+        paymentIntentId = event.data.object.id;
+        const products = Array.isArray(metadata) ? metadata : [metadata];
+        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
+        customerId = products[0]?.userId || metadata.userId
+        const formattedProducts = products.map(product => ({
+          productId: product.productId,
+          sellerId: product.sellerId,
+          productBrand: product.productBrand,
+          productPrice: product.productPrice,
+          productRetailPrice: product.productRetailPrice,
+          productName: product.productName,
+          productQuantity: product.productQuantity,
+          productColor: product.productColor,
+          productSize: product.productSize
+        }));
         
-//         const order = new Order({
-//           customerId: customerId,
-//           paymentIntentId: paymentIntent.id,
-//           products: formattedProducts
-//         });
+        const order = new Order({
+          customerId: customerId,
+          paymentIntentId: paymentIntent.id,
+          products: formattedProducts
+        });
 
-//         await order.save();
+        await order.save();
 
-//         total = event.data.object.amount_total;
-//         subTotal = event.data.object.amount_subtotal;
-//         paymentStatus = event.data.object.payment_status;
+        total = event.data.object.amount_total;
+        subTotal = event.data.object.amount_subtotal;
+        paymentStatus = event.data.object.payment_status;
         
-//         break; 
+        break; 
 
-//       case 'invoice.payment_succeeded':
-//         const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
-//          console.log(orderInvoiceInfo);
-//         orderInvoiceInfo.productInvoice.push({
-//           total,
-//           subTotal,
-//           paymentStatus,
-//           hostedInvoiceUrl,
-//           invoicePdf
-//         });
+      case 'invoice.payment_succeeded':
+        const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
+         console.log(orderInvoiceInfo);
+        orderInvoiceInfo.productInvoice.push({
+          total,
+          subTotal,
+          paymentStatus,
+          hostedInvoiceUrl,
+          invoicePdf
+        });
       
-//         await orderInvoiceInfo.save();
+        await orderInvoiceInfo.save();
 
-//         break;
+        break;
 
-//       default:
-//         break;
-//     }
+      default:
+        break;
+    }
 
-//     response.status(200).end();
-//   } catch (err) {
-//     console.error("Error processing webhook:", err);
-//     response.status(400).send(`Webhook Error: ${err.message}`);
-//   }
-// });
-
-app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
-  const sig = request.headers['stripe-signature'];
-
-  let event;
-
-  try {
-    event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+    response.status(200).end();
   } catch (err) {
+    console.error("Error processing webhook:", err);
     response.status(400).send(`Webhook Error: ${err.message}`);
-    return;
   }
-
-  // Handle the event
-  console.log(`Unhandled event type ${event.type}`);
-
-  // Return a 200 response to acknowledge receipt of the event
-  response.send();
 });
+
+// app.post('/webhook', express.raw({type: 'application/json'}), (request, response) => {
+//   const sig = request.headers['stripe-signature'];
+
+//   let event;
+
+//   try {
+//     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
+//   } catch (err) {
+//     response.status(400).send(`Webhook Error: ${err.message}`);
+//     return;
+//   }
+
+//   // Handle the event
+//   console.log(`Unhandled event type ${event.type}`);
+
+//   // Return a 200 response to acknowledge receipt of the event
+//   response.send();
+// });
 
 // app.use(express.json({verify: (req,res,buf) => { req.rawBody = buf.toString() }}))
 app.use(express.json())
