@@ -152,7 +152,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     
   
     cartdata = event.data.object.metadata.cart;
-    console.log(metadata);
+    console.log(cartdata);
 
     switch (event.type) {
       case 'checkout.session.completed':
