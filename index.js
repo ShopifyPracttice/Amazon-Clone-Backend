@@ -151,12 +151,12 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const invoicePdf = event.data.object.invoice_pdf;  
     
     cartdata = event.data.object.metadata.cart;
-    console.log(cartdata);
+    console.log("Outside",cartdata);
 
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
-    console.log(cartdata);
+    console.log("In checkout",cartdata);
 
         // paymentIntentId = event.data.object.id;
         // // Convert single product to array
