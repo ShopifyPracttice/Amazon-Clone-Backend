@@ -102,8 +102,8 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let cartData = [];
-let buyNow;
+// let cartData = [];
+// let buyNow;
 let subTotal;
 let paymentIntentId;
 let paymentStatus;
@@ -155,8 +155,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
-        cartData = JSON.parse(event.data.object.metadata.cart);
-        buyNow = JSON.parse(event.data.object.metadata.buyNow);
+      const  cartData = event.data.object.metadata.cart;
+      const  buyNow = event.data.object.metadata.buyNow;
       console.log(cartData);
         // console.log(metadata); 
         paymentIntentId = event.data.object.id;
@@ -186,8 +186,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
 
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
-         return await emptyCartLogic(customerId);
-      }else if(buyNowMetadata){
+          await emptyCartLogic(customerId);
+      }else if(buyNow){
         // Buy now checkout
         const customerId = buyNowMetadata.userId;
         const product = buyNowMetadata;
@@ -342,7 +342,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       metadata: {
-        cart: JSON.stringify(products)
+        cart: products
       },
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/success`,
@@ -377,7 +377,7 @@ app.post('/create-buy-session', async (req, res) => {
         },
       ],
       metadata: {
-        buyNow: JSON.stringify(product)
+        buyNow: product
       },
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/success`,
