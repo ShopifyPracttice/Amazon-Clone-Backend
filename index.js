@@ -147,27 +147,19 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
   try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
+    const paymentIntent = event.data.object;
+    buyNowData = JSON.parse(event.data.object.metadata.buyNow);
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
     switch (event.type) {
       case 'checkout.session.completed':
         const metadata = event.data.object.metadata;
+        paymentIntentId = event.data.object.id;
 
         if (metadata && metadata.cart) {
              cartData = JSON.parse(metadata.cart);
             console.log(cartData);
-        } else {
-            console.log("Cart data not found in metadata");
-        }
-        const paymentIntent = event.data.object;
-        // cartData = JSON.parse(event.data.object.metadata.cart);
-        buyNowData = JSON.parse(event.data.object.metadata.buyNow);
-        // console.log(metadata); 
-        paymentIntentId = event.data.object.id;
-        // const products = Array.isArray(metadata) ? metadata : [metadata];
-        if (metadata && metadata.cart) {
-          // Cart checkout
-          const customerId = cartData[0]?.userId
+            const customerId = cartData[0]?.userId
           const formattedProducts = cartData.map(product => ({
               productId: product.productId,
               sellerId: product.sellerId,
@@ -191,10 +183,10 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
           await emptyCartLogic(customerId);
-      }else if(metadata && metadata.buyNow){
+        }else if(metadata && metadata.buyNow){
         // Buy now checkout
-        const customerId = buyNowMetadata.userId;
-        const product = buyNowMetadata;
+        const customerId = metadata.buyNow.userId;
+        const product = metadata.buyNow;
 
         // const unitPrice = (product.productPrice / product.productQuantity) * 100;
         const formattedProduct = {
