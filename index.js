@@ -180,7 +180,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       products: formattedProducts
     });
       console.log(order);
-    // await order.save();
+    await order.save();
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
@@ -251,7 +251,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
           invoicePdf
         });
          console.log(orderInvoiceInfo);      
-        // await orderInvoiceInfo.save();
+        await orderInvoiceInfo.save();
 
         break;
 
