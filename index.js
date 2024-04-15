@@ -102,7 +102,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let cartData;
+let cartData = [];
 let buyNowData;
 let subTotal;
 let paymentIntentId;
@@ -155,11 +155,12 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       case 'checkout.session.completed':
         const metadata = event.data.object.metadata;
         paymentIntentId = event.data.object.id;
-        const cartData = JSON.parse(metadata.cart);
+        console.log(metadata);
+         cartData = JSON.parse(metadata.cart);
         console.log(cartData);
          
         if (metadata && metadata.cart) {
-            const cartData = JSON.parse(metadata.cart);
+             cartData = JSON.parse(metadata.cart);
             console.log(cartData);
             const customerId = cartData[0]?.userId
           const formattedProducts = cartData.map(product => ({
