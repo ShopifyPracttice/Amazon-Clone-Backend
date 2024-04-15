@@ -160,14 +160,14 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
             console.log("Cart data not found in metadata");
         }
         const paymentIntent = event.data.object;
-        cartData = JSON.parse(event.data.object.metadata.cart);
+        // cartData = JSON.parse(event.data.object.metadata.cart);
         buyNowData = JSON.parse(event.data.object.metadata.buyNow);
         // console.log(metadata); 
         paymentIntentId = event.data.object.id;
         // const products = Array.isArray(metadata) ? metadata : [metadata];
-        if (cartData && cartData.length > 0) {
+        if (metadata && metadata.cart) {
           // Cart checkout
-          const customerId = cartData[0]?.userId || cartData.userId;
+          const customerId = metadata.cart[0]?.userId || metadata.cart.userId;
           const formattedProducts = cartData.map(product => ({
               productId: product.productId,
               sellerId: product.sellerId,
