@@ -147,14 +147,11 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
   try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
-    console.log(event.data);
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
-    
-  
-
     switch (event.type) {
       case 'checkout.session.completed':
+    console.log(event.data);
         const paymentIntent = event.data.object;
         cartData = JSON.parse(event.data.object.metadata.cart);
         buyNowData = JSON.parse(event.data.object.metadata.buyNow);
