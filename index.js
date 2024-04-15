@@ -157,8 +157,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         const paymentIntent = event.data.object;
         cartData = JSON.parse(event.data.object.metadata.cart);
         buyNow = JSON.parse(event.data.object.metadata.buyNow);
-
-        // console.log(metadata);
+      console.log(cartData);
+        // console.log(metadata); 
         paymentIntentId = event.data.object.id;
         // const products = Array.isArray(metadata) ? metadata : [metadata];
         if (cartData && cartData.length > 0) {
