@@ -159,81 +159,29 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
          cartData = JSON.parse(metadata.cart);
         console.log(cartData);
          
-        if (metadata.length > 0 && metadata.cart.length > 0) {
-             cartData = JSON.parse(metadata.cart);
-            console.log(cartData);
-            const customerId = cartData[0]?.userId
-          const formattedProducts = cartData.map(product => ({
-              productId: product.productId,
-              sellerId: product.sellerId,
-              productBrand: product.productBrand,
-              productPrice: product.productPrice,
-              productRetailPrice: product.productRetailPrice,
-              productName: product.productName,
-              productQuantity: product.productQuantity,
-              productColor: product.productColor,
-              productSize: product.productSize
-          }));
+ 
 
-          const order = new Order({
-              customerId: customerId,
-              paymentIntentId: paymentIntent.id,
-              products: formattedProducts
-          });
-
-          await order.save();
-
-          // Empty the cart after successful payment
-          // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
-          await emptyCartLogic(customerId);
-        }else if(metadata.length > 0 && metadata.buyNow.length > 0){
-        // Buy now checkout
-        const customerId = metadata.buyNow.userId;
-        const product = metadata.buyNow;
-
-        // const unitPrice = (product.productPrice / product.productQuantity) * 100;
-        const formattedProduct = {
-            productId: product.productId,
-            sellerId: product.sellerId,
-            productBrand: product.productBrand,
-            productPrice: product.productPrice,
-            productRetailPrice: product.productRetailPrice,
-            productName: product.productName,
-            productQuantity: product.productQuantity,
-            productColor: product.productColor,
-            productSize: product.productSize
-        };
-
+        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
+        customerId = products[0]?.userId || metadata.userId
+        const formattedProducts = products.map(product => ({
+          productId: product.productId,
+          sellerId: product.sellerId,
+          productBrand: product.productBrand,
+          productPrice: product.productPrice,
+          productRetailPrice: product.productRetailPrice,
+          productName: product.productName,
+          productQuantity: product.productQuantity,
+          productColor: product.productColor,
+          productSize: product.productSize
+        }));
+        
         const order = new Order({
-            customerId: customerId,
-            paymentIntentId: paymentIntent.id,
-            products: [formattedProduct]
+          customerId: customerId,
+          paymentIntentId: paymentIntent.id,
+          products: formattedProducts
         });
 
         await order.save();
-    }
-
-        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
-        // customerId = products[0]?.userId || metadata.userId
-        // const formattedProducts = products.map(product => ({
-        //   productId: product.productId,
-        //   sellerId: product.sellerId,
-        //   productBrand: product.productBrand,
-        //   productPrice: product.productPrice,
-        //   productRetailPrice: product.productRetailPrice,
-        //   productName: product.productName,
-        //   productQuantity: product.productQuantity,
-        //   productColor: product.productColor,
-        //   productSize: product.productSize
-        // }));
-        
-        // const order = new Order({
-        //   customerId: customerId,
-        //   paymentIntentId: paymentIntent.id,
-        //   products: formattedProducts
-        // });
-
-        // await order.save();
 
         total = event.data.object.amount_total;
         subTotal = event.data.object.amount_subtotal;
@@ -341,7 +289,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       metadata: {
-        cart: JSON.stringify(products)
+        buyNow: JSON.stringify(products)
       },
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/success`,
