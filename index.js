@@ -102,8 +102,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let cartData = [];
-let buyNowData;
+let metadata = [];
 let subTotal;
 let paymentIntentId;
 let paymentStatus;
@@ -147,25 +146,26 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
   try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
-    const paymentIntent = event.data.object;
-    buyNowData = JSON.parse(event.data.object.metadata.buyNow);
+    console.log(event.data);
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
+    
+  
+
     switch (event.type) {
       case 'checkout.session.completed':
-        const metadata = event.data.object.metadata;
+        const paymentIntent = event.data.object;
+        metadata = JSON.parse(event.data.object.metadata.buyNow);
         paymentIntentId = event.data.object.id;
-        console.log(metadata);
-         cartData = JSON.parse(metadata.cart);
-        console.log(cartData);
-         
- 
+        
+        // Convert single product to array
+        const products = Array.isArray(metadata) ? metadata : [metadata];
+        
+        // Extract customerId
+        customerId = products[0]?.userId || 'defaultUserId'; // Use a default value if userId is not available
 
-        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
-        customerId = products[0]?.userId || metadata.userId
         const formattedProducts = products.map(product => ({
           productId: product.productId,
-          sellerId: product.sellerId,
           productBrand: product.productBrand,
           productPrice: product.productPrice,
           productRetailPrice: product.productRetailPrice,
@@ -182,6 +182,28 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         });
 
         await order.save();
+
+        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
+        // customerId = products[0]?.userId || metadata.userId
+        // const formattedProducts = products.map(product => ({
+        //   productId: product.productId,
+        //   sellerId: product.sellerId,
+        //   productBrand: product.productBrand,
+        //   productPrice: product.productPrice,
+        //   productRetailPrice: product.productRetailPrice,
+        //   productName: product.productName,
+        //   productQuantity: product.productQuantity,
+        //   productColor: product.productColor,
+        //   productSize: product.productSize
+        // }));
+        
+        // const order = new Order({
+        //   customerId: customerId,
+        //   paymentIntentId: paymentIntent.id,
+        //   products: formattedProducts
+        // });
+
+        // await order.save();
 
         total = event.data.object.amount_total;
         subTotal = event.data.object.amount_subtotal;
@@ -289,7 +311,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       metadata: {
-        buyNow: JSON.stringify(products)
+        cart: JSON.stringify(products)
       },
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/success`,
