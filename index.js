@@ -161,7 +161,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         // console.log(metadata);
         paymentIntentId = event.data.object.id;
         // const products = Array.isArray(metadata) ? metadata : [metadata];
-        if (cartData.length > 0) {
+        if (cartData && cartData.length > 0) {
           // Cart checkout
           const customerId = cartData[0]?.userId || cartData.userId;
           const formattedProducts = cartData.map(product => ({
@@ -187,7 +187,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
           await emptyCartLogic(customerId);
-      }else {
+      }else if(buyNowMetadata){
         // Buy now checkout
         const customerId = buyNowMetadata.userId;
         const product = buyNowMetadata;
