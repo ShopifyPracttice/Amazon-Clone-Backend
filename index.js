@@ -102,7 +102,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let metadata = [];
+let cartdata = [];
 let subTotal;
 let paymentIntentId;
 let paymentStatus;
@@ -151,7 +151,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const invoicePdf = event.data.object.invoice_pdf;  
     
   
-    metadata = event.data.object.metadata.buyNow;
+    cartdata = event.data.object.metadata.cart;
     console.log(metadata);
 
     switch (event.type) {
