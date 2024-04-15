@@ -5,6 +5,7 @@ const mongoose = require("mongoose")
 const stripe = require('stripe')('sk_test_51OzdTnFshF4E0vp9jdqWMHH58hsn8pXrjpcCEgFPxFlHly1xglknanqp54vDECX5ht0MEgpxPdQuLQnjteS7H1zb00JxeWTofT');
 const CustomerRoute = require("./routes/customer")
 const Order = require("./models/Order")
+const CustomerModel = require("./models/Customer")
 const OrderRoute = require("./routes/order")
 const BusinessRoute = require("./routes/business")
 const ProductRoute = require("./routes/product")
@@ -101,7 +102,8 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let metadata = [];
+let cartData = [];
+let buyNow;
 let subTotal;
 let paymentIntentId;
 let paymentStatus;
@@ -111,6 +113,30 @@ const endpointSecret = "whsec_kDwd7Xbt20GXU1iu852Oy5FT3Tn6kC0n";
 
 
 let event
+
+const emptyCartLogic = async (customerId) => {
+  try {
+      // Find the customer by their ID
+      const customer = await CustomerModel.findById(customerId);
+      
+      // If customer is found
+      if (customer) {
+          // Set the cart products to an empty array
+          customer.cartProducts = [];
+          
+          // Save the updated customer document to the database
+          await customer.save();
+          
+          console.log(`Cart emptied for customer with ID: ${customerId}`);
+      } else {
+          console.log(`Customer with ID ${customerId} not found.`);
+      }
+  } catch (error) {
+      console.error(`Error emptying cart for customer with ID ${customerId}:`, error);
+  }
+};
+
+
 
 app.post('/webhook', express.raw({type: 'application/json'}),async (request, response) => {
   // console.log(request.rawBody)
@@ -129,31 +155,86 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
-        metadata = JSON.parse(event.data.object.metadata.buyNow);
+        cartData = JSON.parse(event.data.object.metadata.cart);
+        buyNow = JSON.parse(event.data.object.metadata.buyNow);
+
         // console.log(metadata);
         paymentIntentId = event.data.object.id;
-        const products = Array.isArray(metadata) ? metadata : [metadata];
-        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
-        customerId = products[0]?.userId || metadata.userId
-        const formattedProducts = products.map(product => ({
-          productId: product.productId,
-          sellerId: product.sellerId,
-          productBrand: product.productBrand,
-          productPrice: product.productPrice,
-          productRetailPrice: product.productRetailPrice,
-          productName: product.productName,
-          productQuantity: product.productQuantity,
-          productColor: product.productColor,
-          productSize: product.productSize
-        }));
-        
+        // const products = Array.isArray(metadata) ? metadata : [metadata];
+        if (cartData.length > 0) {
+          // Cart checkout
+          const customerId = cartData[0]?.userId || cartData.userId;
+          const formattedProducts = cartData.map(product => ({
+              productId: product.productId,
+              sellerId: product.sellerId,
+              productBrand: product.productBrand,
+              productPrice: product.productPrice,
+              productRetailPrice: product.productRetailPrice,
+              productName: product.productName,
+              productQuantity: product.productQuantity,
+              productColor: product.productColor,
+              productSize: product.productSize
+          }));
+
+          const order = new Order({
+              customerId: customerId,
+              paymentIntentId: paymentIntent.id,
+              products: formattedProducts
+          });
+
+          await order.save();
+
+          // Empty the cart after successful payment
+          // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
+          await emptyCartLogic(customerId);
+      }else {
+        // Buy now checkout
+        const customerId = buyNowMetadata.userId;
+        const product = buyNowMetadata;
+
+        // const unitPrice = (product.productPrice / product.productQuantity) * 100;
+        const formattedProduct = {
+            productId: product.productId,
+            sellerId: product.sellerId,
+            productBrand: product.productBrand,
+            productPrice: product.productPrice,
+            productRetailPrice: product.productRetailPrice,
+            productName: product.productName,
+            productQuantity: product.productQuantity,
+            productColor: product.productColor,
+            productSize: product.productSize
+        };
+
         const order = new Order({
-          customerId: customerId,
-          paymentIntentId: paymentIntent.id,
-          products: formattedProducts
+            customerId: customerId,
+            paymentIntentId: paymentIntent.id,
+            products: [formattedProduct]
         });
 
         await order.save();
+    }
+
+        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
+        // customerId = products[0]?.userId || metadata.userId
+        // const formattedProducts = products.map(product => ({
+        //   productId: product.productId,
+        //   sellerId: product.sellerId,
+        //   productBrand: product.productBrand,
+        //   productPrice: product.productPrice,
+        //   productRetailPrice: product.productRetailPrice,
+        //   productName: product.productName,
+        //   productQuantity: product.productQuantity,
+        //   productColor: product.productColor,
+        //   productSize: product.productSize
+        // }));
+        
+        // const order = new Order({
+        //   customerId: customerId,
+        //   paymentIntentId: paymentIntent.id,
+        //   products: formattedProducts
+        // });
+
+        // await order.save();
 
         total = event.data.object.amount_total;
         subTotal = event.data.object.amount_subtotal;
@@ -261,7 +342,7 @@ app.post('/create-checkout-session', async (req, res) => {
     const session = await stripe.checkout.sessions.create({
       line_items: lineItems,
       metadata: {
-        buyNow: JSON.stringify(products)
+        cart: JSON.stringify(products)
       },
       mode: 'payment',
       success_url: `${YOUR_DOMAIN}/success`,
