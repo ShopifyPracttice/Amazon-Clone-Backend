@@ -151,11 +151,17 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const invoicePdf = event.data.object.invoice_pdf;  
     switch (event.type) {
       case 'checkout.session.completed':
-    console.log(event.data.object.metadata);
+        const metadata = event.data.object.metadata;
+
+        if (metadata && metadata.cart) {
+            const cartData = JSON.parse(metadata.cart);
+            console.log(cartData);
+        } else {
+            console.log("Cart data not found in metadata");
+        }
         const paymentIntent = event.data.object;
         cartData = JSON.parse(event.data.object.metadata.cart);
         buyNowData = JSON.parse(event.data.object.metadata.buyNow);
-      console.log(cartData);
         // console.log(metadata); 
         paymentIntentId = event.data.object.id;
         // const products = Array.isArray(metadata) ? metadata : [metadata];
