@@ -155,7 +155,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const paymentIntent = event.data.object;
+        const paymentIntent = event.data.object
+    cartdata = JSON.parse(event.data.object.metadata.cart);
     console.log("In checkout",cartdata);
 
         // paymentIntentId = event.data.object.id;
