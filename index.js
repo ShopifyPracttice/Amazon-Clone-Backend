@@ -150,13 +150,14 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
     
-  
     cartdata = event.data.object.metadata.cart;
     console.log(cartdata);
 
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object;
+    console.log(cartdata);
+
         // paymentIntentId = event.data.object.id;
         // // Convert single product to array
         // const products = Array.isArray(metadata) ? metadata : [metadata];
