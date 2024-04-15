@@ -182,9 +182,12 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       // console.log(order);
     const result = await order.save();
     console.log(result);
+
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
+    await emptyCartLogic(customerId)
+    break;
   
         // paymentIntentId = event.data.object.id;
         // // Convert single product to array
