@@ -158,6 +158,30 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         const paymentIntent = event.data.object
     cartdata = JSON.parse(event.data.object.metadata.cart);
     console.log("In checkout",cartdata);
+     customerId = cartdata[0]?.userId || cartdata.userId
+    const formattedProducts = cartdata.map(product => ({
+      productId: product.productId,
+      sellerId: product.sellerId,
+      productBrand: product.productBrand,
+      productPrice: product.productPrice,
+      productRetailPrice: product.productRetailPrice,
+      productName: product.productName,
+      productQuantity: product.productQuantity,
+      productColor: product.productColor,
+      productSize: product.productSize
+    }));
+    
+    const order = new Order({
+      customerId: customerId,
+      paymentIntentId: paymentIntent.id,
+      products: formattedProducts
+    });
+
+    await order.save();
+
+    total = event.data.object.amount_total;
+    subTotal = event.data.object.amount_subtotal;
+    paymentStatus = event.data.object.payment_status;
 
         // paymentIntentId = event.data.object.id;
         // // Convert single product to array
