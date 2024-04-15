@@ -178,8 +178,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       paymentIntentId: paymentIntent.id,
       products: formattedProducts
     });
-
-    await order.save();
+      console.log(order);
+    // await order.save();
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
@@ -238,18 +238,18 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         
       //   break; 
 
-      case 'invoice.payment_succeeded':
-        const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
-         console.log(orderInvoiceInfo);
-        orderInvoiceInfo.productInvoice.push({
-          total,
-          subTotal,
-          paymentStatus,
-          hostedInvoiceUrl,
-          invoicePdf
-        });
+      // case 'invoice.payment_succeeded':
+      //   const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
+      //    console.log(orderInvoiceInfo);
+      //   orderInvoiceInfo.productInvoice.push({
+      //     total,
+      //     subTotal,
+      //     paymentStatus,
+      //     hostedInvoiceUrl,
+      //     invoicePdf
+      //   });
       
-        await orderInvoiceInfo.save();
+      //   await orderInvoiceInfo.save();
 
         break;
 
