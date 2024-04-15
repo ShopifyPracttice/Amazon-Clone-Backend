@@ -156,7 +156,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     switch (event.type) {
       case 'checkout.session.completed':
         const paymentIntent = event.data.object
-        if(metadata.cart){
+        
     cartdata = JSON.parse(event.data.object.metadata.cart);
     console.log("In checkout",cartdata);
 
@@ -180,7 +180,6 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     });
 
     await order.save();
-  }
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
