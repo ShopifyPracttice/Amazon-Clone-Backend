@@ -58,9 +58,7 @@ router.post("/register/business/email", async (req, res) => {
     try {
         const ownerEmail = req.body.email;
         const existingBusinessEmail = await BusinessModel.findOne({ownerEmail: ownerEmail} );
-        const existingCustomerEmail = await CustomerModel.findOne({ownerEmail: ownerEmail});
-        console.log(existingBusinessEmail);
-        console.log(existingCustomerEmail);
+        const existingCustomerEmail = await CustomerModel.findOne({customerEmail: ownerEmail});
         if (existingCustomerEmail) {
             return res.json({ status: "bad", message: "This email is already register with customer account!" });
         }
