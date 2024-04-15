@@ -151,7 +151,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const invoicePdf = event.data.object.invoice_pdf;  
     switch (event.type) {
       case 'checkout.session.completed':
-    console.log(event.data);
+    console.log(event.data.object.metadata);
         const paymentIntent = event.data.object;
         cartData = JSON.parse(event.data.object.metadata.cart);
         buyNowData = JSON.parse(event.data.object.metadata.buyNow);
