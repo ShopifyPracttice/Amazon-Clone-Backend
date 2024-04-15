@@ -139,7 +139,7 @@ const emptyCartLogic = async (customerId) => {
 
 
 app.post('/webhook', express.raw({type: 'application/json'}),async (request, response) => {
-  console.log(request.body)
+  // console.log(request.body)
   const sig = request.headers['stripe-signature'];
   // const body = request.body;
   const body = request.body;
@@ -147,6 +147,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
   try {
     event = stripe.webhooks.constructEvent(request.body, sig, endpointSecret);
     const Id = event.data.object.metadata.buyNow;
+    console.log(event.data);
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
     
