@@ -151,7 +151,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     const invoicePdf = event.data.object.invoice_pdf;  
     
   
-    metadata = JSON.parse(event.data.object.metadata.buyNow);
+    metadata = event.data.object.metadata.buyNow;
     console.log(metadata);
 
     switch (event.type) {
