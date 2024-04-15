@@ -159,7 +159,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
          cartData = JSON.parse(metadata.cart);
         console.log(cartData);
          
-        if (metadata && metadata.cart) {
+        if (metadata.length > 0 && metadata.cart.length > 0) {
              cartData = JSON.parse(metadata.cart);
             console.log(cartData);
             const customerId = cartData[0]?.userId
@@ -186,7 +186,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
           await emptyCartLogic(customerId);
-        }else if(metadata && metadata.buyNow){
+        }else if(metadata.length > 0 && metadata.buyNow.length > 0){
         // Buy now checkout
         const customerId = metadata.buyNow.userId;
         const product = metadata.buyNow;
