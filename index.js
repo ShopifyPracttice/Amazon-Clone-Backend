@@ -102,7 +102,7 @@ const app = express();
 // app.use(bodyParser.json());
 
 let total;
-let cartData = [];
+let cartData;
 let buyNowData;
 let subTotal;
 let paymentIntentId;
@@ -154,7 +154,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         const metadata = event.data.object.metadata;
 
         if (metadata && metadata.cart) {
-            const cartData = JSON.parse(metadata.cart);
+             cartData = JSON.parse(metadata.cart);
             console.log(cartData);
         } else {
             console.log("Cart data not found in metadata");
@@ -167,7 +167,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         // const products = Array.isArray(metadata) ? metadata : [metadata];
         if (metadata && metadata.cart) {
           // Cart checkout
-          const customerId = metadata.cart[0]?.userId || metadata.cart.userId;
+          const customerId = cartData[0]?.userId
           const formattedProducts = cartData.map(product => ({
               productId: product.productId,
               sellerId: product.sellerId,
@@ -191,7 +191,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
           await emptyCartLogic(customerId);
-      }else if(buyNowData){
+      }else if(metadata && metadata.buyNow){
         // Buy now checkout
         const customerId = buyNowMetadata.userId;
         const product = buyNowMetadata;
