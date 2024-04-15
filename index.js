@@ -155,7 +155,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const paymentIntent = event.data.object
+        const paymentIntent = event.data.object;
+       paymentIntentId = event.data.object.id;
         
     cartdata = JSON.parse(event.data.object.metadata.cart);
     console.log("In checkout",cartdata);
@@ -238,18 +239,18 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         
       //   break; 
 
-      // case 'invoice.payment_succeeded':
-      //   const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
-      //    console.log(orderInvoiceInfo);
-      //   orderInvoiceInfo.productInvoice.push({
-      //     total,
-      //     subTotal,
-      //     paymentStatus,
-      //     hostedInvoiceUrl,
-      //     invoicePdf
-      //   });
-      
-      //   await orderInvoiceInfo.save();
+      case 'invoice.payment_succeeded':
+        const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
+         console.log(orderInvoiceInfo);
+        orderInvoiceInfo.productInvoice.push({
+          total,
+          subTotal,
+          paymentStatus,
+          hostedInvoiceUrl,
+          invoicePdf
+        });
+         console.log(orderInvoiceInfo);      
+        // await orderInvoiceInfo.save();
 
         break;
 
