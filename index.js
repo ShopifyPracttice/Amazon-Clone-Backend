@@ -179,8 +179,9 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       paymentIntentId: paymentIntent.id,
       products: formattedProducts
     });
-      console.log(order);
-    await order.save();
+      // console.log(order);
+    const result = await order.save();
+    console.log(result);
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
