@@ -160,9 +160,9 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         
         // Convert single product to array
         const products = Array.isArray(metadata) ? metadata : [metadata];
-        
+        console.log(products);
         // Extract customerId
-        customerId = products[0]?.userId || 'defaultUserId'; // Use a default value if userId is not available
+        customerId = products[0]?.userId || products.userId; // Use a default value if userId is not available
 
         const formattedProducts = products.map(product => ({
           productId: product.productId,
