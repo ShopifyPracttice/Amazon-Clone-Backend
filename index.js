@@ -186,7 +186,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
 
           // Empty the cart after successful payment
           // Add your logic here to empty the cart, for example, delete items from the database associated with the user's cart
-          await emptyCartLogic(customerId);
+         return await emptyCartLogic(customerId);
       }else if(buyNowMetadata){
         // Buy now checkout
         const customerId = buyNowMetadata.userId;
