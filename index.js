@@ -176,7 +176,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     
     const order = new Order({
       customerId: customerId,
-      paymentIntentId: paymentIntent.id,
+      paymentIntentId: paymentIntentId,
       products: formattedProducts
     });
       // console.log(order);
@@ -186,7 +186,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
-    await emptyCartLogic(customerId)
+    // await emptyCartLogic(customerId)
   break;
       case 'invoice.payment_succeeded':
         console.log(paymentIntentId);
