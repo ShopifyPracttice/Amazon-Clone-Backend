@@ -149,18 +149,18 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     // console.log(event.data);
     const hostedInvoiceUrl = event.data.object.hosted_invoice_url;
     const invoicePdf = event.data.object.invoice_pdf;  
-    paymentIntentId = event.data.object.id;
+    // paymentIntentId = event.data.object.id;
     
     cartdata = event.data.object.metadata.cart;
     // console.log("Outside",cartdata);
 
     switch (event.type) {
       case 'checkout.session.completed':
-        const paymentIntent = event.data.object;
+         paymentIntentId = event.data.object.id;
         
     cartdata = JSON.parse(event.data.object.metadata.cart);
     // console.log("In checkout",cartdata);
-
+     console.log(paymentIntentId);
      customerId = cartdata[0]?.userId || cartdata.userId
     const formattedProducts = cartdata.map(product => ({
       productId: product.productId,
