@@ -187,61 +187,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
     await emptyCartLogic(customerId)
-  
-        // paymentIntentId = event.data.object.id;
-        // // Convert single product to array
-        // const products = Array.isArray(metadata) ? metadata : [metadata];
-        // console.log(products);
-        // // Extract customerId
-        // customerId = products[0]?.userId || products.userId; // Use a default value if userId is not available
-
-        // const formattedProducts = products.map(product => ({
-        //   productId: product.productId,
-        //   productBrand: product.productBrand,
-        //   productPrice: product.productPrice,
-        //   productRetailPrice: product.productRetailPrice,
-        //   productName: product.productName,
-        //   productQuantity: product.productQuantity,
-        //   productColor: product.productColor,
-        //   productSize: product.productSize
-        // }));
-        
-        // const order = new Order({
-        //   customerId: customerId,
-        //   paymentIntentId: paymentIntent.id,
-        //   products: formattedProducts
-        // });
-
-        // await order.save();
-
-        // customerId = metadata[0].userId; // Assuming userId is present in the metadata of the first product
-        // customerId = products[0]?.userId || metadata.userId
-        // const formattedProducts = products.map(product => ({
-        //   productId: product.productId,
-        //   sellerId: product.sellerId,
-        //   productBrand: product.productBrand,
-        //   productPrice: product.productPrice,
-        //   productRetailPrice: product.productRetailPrice,
-        //   productName: product.productName,
-        //   productQuantity: product.productQuantity,
-        //   productColor: product.productColor,
-        //   productSize: product.productSize
-        // }));
-        
-        // const order = new Order({
-        //   customerId: customerId,
-        //   paymentIntentId: paymentIntent.id,
-        //   products: formattedProducts
-        // });
-
-        // await order.save();
-
-      //   total = event.data.object.amount_total;
-      //   subTotal = event.data.object.amount_subtotal;
-      //   paymentStatus = event.data.object.payment_status;
-        
-      //   break; 
-
+  break;
       case 'invoice.payment_succeeded':
         console.log(paymentIntentId);
         const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
