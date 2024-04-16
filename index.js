@@ -103,6 +103,7 @@ const app = express();
 
 let total;
 let cartdata = [];
+let buyNowData;
 let subTotal;
 let paymentIntentId;
 let paymentStatus;
@@ -153,14 +154,15 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     
     cartdata = event.data.object.metadata.cart;
     // console.log("Outside",cartdata);
+    buyNowData = event.data.object.metadata.buyNow;
 
     switch (event.type) {
       case 'checkout.session.completed':
          paymentIntentId = event.data.object.id;
-        
+        if(cartdata){
     cartdata = JSON.parse(event.data.object.metadata.cart);
     // console.log("In checkout",cartdata);
-     console.log(paymentIntentId);
+    //  console.log(paymentIntentId);
      customerId = cartdata[0]?.userId || cartdata.userId
     const formattedProducts = cartdata.map(product => ({
       productId: product.productId,
@@ -181,12 +183,16 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     });
       // console.log(order);
     const result = await order.save();
-    console.log(result);
+    // console.log(result);
 
     total = event.data.object.amount_total;
     subTotal = event.data.object.amount_subtotal;
     paymentStatus = event.data.object.payment_status;
     await emptyCartLogic(customerId)
+  }else if(buyNowData){
+    buyNowData = JSON.parse(event.data.object.metadata.buyNow);
+    console.log(buyNowData);
+  }
   break;
       case 'invoice.payment_succeeded':
         console.log(paymentIntentId);
@@ -199,7 +205,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
             hostedInvoiceUrl,
             invoicePdf
           });
-          console.log(orderInvoiceInfo);
+          // console.log(orderInvoiceInfo);
           await orderInvoiceInfo.save();
         } else {
           console.error('Order not found for payment intent ID:', paymentIntentId);
