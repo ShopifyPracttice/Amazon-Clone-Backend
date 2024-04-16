@@ -192,6 +192,25 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
   }else if(buyNowData){
     buyNowData = JSON.parse(event.data.object.metadata.buyNow);
     console.log(buyNowData);
+    customerId = buyNowData.userId;
+    const buyNowProduct = {
+      productId: buyNowData.productId,
+      sellerId: buyNowData.sellerId,
+      productBrand: buyNowData.productBrand,
+      productPrice: buyNowData.productPrice,
+      productRetailPrice: buyNowData.productRetailPrice,
+      productName: buyNowData.productName,
+      productQuantity: buyNowData.productQuantity,
+      productColor: buyNowData.productColor,
+      productSize: buyNowData.productSize
+    }
+    const order = new Order({
+      customerId: customerId,
+      paymentIntentId: paymentIntentId,
+      products: buyNowProduct
+    });
+    const result = await order.save();
+    console.log(result);
   }
   break;
       case 'invoice.payment_succeeded':
