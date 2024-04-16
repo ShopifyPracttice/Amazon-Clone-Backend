@@ -191,7 +191,8 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       case 'invoice.payment_succeeded':
         console.log(paymentIntentId);
         const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
-         console.log(orderInvoiceInfo);
+        if(orderInvoiceInfo){
+          console.log(orderInvoiceInfo);
         orderInvoiceInfo.productInvoice.push({
           total,
           subTotal,
@@ -201,7 +202,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
         });
          console.log(orderInvoiceInfo);      
         await orderInvoiceInfo.save();
-
+      }
         break;
 
       default:
