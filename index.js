@@ -191,18 +191,20 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       case 'invoice.payment_succeeded':
         console.log(paymentIntentId);
         const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
-        if(orderInvoiceInfo){
+        if (orderInvoiceInfo) {
+          orderInvoiceInfo.productInvoice.push({
+            total,
+            subTotal,
+            paymentStatus,
+            hostedInvoiceUrl,
+            invoicePdf
+          });
           console.log(orderInvoiceInfo);
-        orderInvoiceInfo.productInvoice.push({
-          total,
-          subTotal,
-          paymentStatus,
-          hostedInvoiceUrl,
-          invoicePdf
-        });
-         console.log(orderInvoiceInfo);      
-        await orderInvoiceInfo.save();
-      }
+          await orderInvoiceInfo.save();
+        } else {
+          console.error('Order not found for payment intent ID:', paymentIntentId);
+        }
+      
         break;
 
       default:
