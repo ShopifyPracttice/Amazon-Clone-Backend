@@ -189,7 +189,7 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
     await emptyCartLogic(customerId)
   }else if(buyNowData){
     buyNowData = JSON.parse(event.data.object.metadata.buyNow);
-    console.log(buyNowData);
+    // console.log(buyNowData);
     customerId = buyNowData.userId;
     const buyNowProduct = {
       productId: buyNowData.productId,
@@ -208,14 +208,14 @@ app.post('/webhook', express.raw({type: 'application/json'}),async (request, res
       products: buyNowProduct
     });
     const result = await order.save();
-    console.log(result);
+    // console.log(result);
   }
   total = event.data.object.amount_total;
   subTotal = event.data.object.amount_subtotal;
   paymentStatus = event.data.object.payment_status;
   break;
       case 'invoice.payment_succeeded':
-        console.log(paymentIntentId);
+        // console.log(paymentIntentId);
         const orderInvoiceInfo = await Order.findOne({ paymentIntentId: paymentIntentId });
         if (orderInvoiceInfo) {
           orderInvoiceInfo.productInvoice.push({
